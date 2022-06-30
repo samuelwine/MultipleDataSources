@@ -20,7 +20,10 @@ namespace API_DBTryout
                 .AddEntityFrameworkStores<ERDbContext>();
             builder.Services.AddRazorPages();
             builder.Services.AddHttpClient<MyClient>();
-            builder.Services.AddScoped<IAllData, LGAllData>();
+            builder.Services.AddScoped<IAllData>(provider =>
+            {
+                return new ERAllData(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
+            });
 
             var app = builder.Build();
 
