@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API_DBTryout.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ERDbContext))]
     [Migration("20220630102020_AddShops")]
     partial class AddShops
     {

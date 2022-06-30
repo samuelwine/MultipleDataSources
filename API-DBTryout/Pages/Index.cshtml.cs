@@ -4,11 +4,12 @@ namespace API_DBTryout.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly AllData _allData;
+        private readonly IAllData _allData;
+
         public List<Shop> Shops { get; set; } = new();
         public List<Shul> Shuls { get; set; } = new();
 
-        public IndexModel(AllData allData)
+        public IndexModel(IAllData allData)
         {
             _allData = allData;
         }

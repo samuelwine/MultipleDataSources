@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_DBTryout.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ERDbContext : IdentityDbContext
     {
         public DbSet<Shop> Shops { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public ERDbContext(DbContextOptions<ERDbContext> options)
             : base(options)
         {
         }

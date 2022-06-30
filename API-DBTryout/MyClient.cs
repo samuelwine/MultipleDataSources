@@ -15,5 +15,12 @@
 
             return shuls;
         }
+
+        public async Task<List<Shop>> GetShops(string querystring)
+        {
+            var shops = await _httpClient.GetFromJsonAsync<List<Shop>>(querystring);
+
+            return shops;
+        }
     }
 }
