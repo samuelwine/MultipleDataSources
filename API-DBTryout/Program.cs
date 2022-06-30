@@ -22,7 +22,16 @@ namespace API_DBTryout
             builder.Services.AddHttpClient<MyClient>();
             builder.Services.AddScoped<IAllData>(provider =>
             {
-                return new ERAllData(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
+                var httpContextService = provider.GetService<IHttpContextAccessor>();
+                if (httpContextService.HttpContext.Request.Path.Value == "/LG")
+                {
+                    return new LGAllData(new MyClient(new HttpClient()));
+
+                }
+                else
+                {
+                    return new ERAllData(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
+                }
             });
 
             var app = builder.Build();

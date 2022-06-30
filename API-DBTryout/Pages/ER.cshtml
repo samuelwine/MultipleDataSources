@@ -1,0 +1,15 @@
+﻿@page
+@model ERModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<h1>ER</h1>
+@foreach (var shop in Model.Shops)
+{
+    <li>@shop.Name</li>
+}
+
+@foreach (var shul in Model.Shuls)
+{
+    <li>@shul.Name</li>
+}
