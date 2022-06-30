@@ -20,6 +20,7 @@ namespace API_DBTryout
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddRazorPages();
             builder.Services.AddHttpClient<MyClient>();
+            builder.Services.AddScoped<AllData>();
 
             var app = builder.Build();
 
