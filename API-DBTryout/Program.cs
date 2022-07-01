@@ -20,19 +20,23 @@ namespace API_DBTryout
                 .AddEntityFrameworkStores<ERDbContext>();
             builder.Services.AddRazorPages();
             builder.Services.AddHttpClient<MyClient>();
-            builder.Services.AddScoped<IAllData>(provider =>
-            {
-                var httpContextService = provider.GetService<IHttpContextAccessor>();
-                if (httpContextService.HttpContext.Request.Path.Value == "/LG")
-                {
-                    return new LGAllData(new MyClient(new HttpClient()));
+            builder.Services.AddScoped<DataHandler>();
+            //builder.Services.AddScoped<IDataHandler>(provider =>
+            //{
+            //    var httpContextService = provider.GetService<IHttpContextAccessor>();
+            //    if (httpContextService.HttpContext.Request.Path.Value == "/LG")
+            //    {
+            //        return new LgDataHandler(new MyClient(new HttpClient()));
 
-                }
-                else
-                {
-                    return new ERAllData(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
-                }
-            });
+            //    }
+            //    else
+            //    {
+            //        return new ErDataHandler(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
+            //    }
+            //})
+            //;
+            builder.Services.AddScoped<IRepository<Shop>, ERShopRepository>();
+            builder.Services.AddScoped<IRepository<Shul>, ERShulRepository>();
 
             var app = builder.Build();
 
