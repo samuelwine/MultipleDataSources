@@ -11,32 +11,38 @@ namespace API_DBTryout
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            var ERconnectionString = builder.Configuration.GetConnectionString("ERDefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            var LGconnectionString = builder.Configuration.GetConnectionString("LGDefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ERDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(ERconnectionString));
+            builder.Services.AddDbContext<LGDbContext>(options =>
+                options.UseSqlServer(LGconnectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ERDbContext>();
             builder.Services.AddRazorPages();
             builder.Services.AddHttpClient<MyClient>();
-            builder.Services.AddScoped<DataHandler>();
-            //builder.Services.AddScoped<IDataHandler>(provider =>
-            //{
-            //    var httpContextService = provider.GetService<IHttpContextAccessor>();
-            //    if (httpContextService.HttpContext.Request.Path.Value == "/LG")
-            //    {
-            //        return new LgDataHandler(new MyClient(new HttpClient()));
+            builder.Services.AddScoped<DataProvider>();
 
-            //    }
-            //    else
-            //    {
-            //        return new ErDataHandler(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
-            //    }
-            //})
-            //;
-            builder.Services.AddScoped<IRepository<Shop>, ERShopRepository>();
-            builder.Services.AddScoped<IRepository<Shul>, ERShulRepository>();
+            builder.Services.AddScoped(typeof(IRepository<>)(provider =>
+            {
+                var httpContextService = provider.GetService<IHttpContextAccessor>();
+                if (httpContextService.HttpContext.Request.Path.Value == "/LG")
+                {
+                    return typeof(LGGenericRepository<>);
+
+                }
+                else
+                {
+                    //return new ErDataHandler(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
+                    return typeof(LGGenericRepository<>);
+                }
+            });
+
+            //builder.Services.AddScoped(typeof(IRepository<>), typeof(LGGenericRepository<>));
+            //builder.Services.AddScoped<IRepository<Shul>, ERShulRepository>();
+            //builder.Services.AddScoped<IRepository<Shop>, ERShopRepository>();
 
             var app = builder.Build();
 

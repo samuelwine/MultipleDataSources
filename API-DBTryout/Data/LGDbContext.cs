@@ -8,7 +8,7 @@ namespace API_DBTryout.Data
         public DbSet<Shop> Shops { get; set; }
         public DbSet<Shul> Shuls { get; set; }
 
-        public LGDbContext(DbContextOptions<ERDbContext> options)
+        public LGDbContext(DbContextOptions<LGDbContext> options)
             : base(options)
         {
         }

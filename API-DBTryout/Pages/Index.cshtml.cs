@@ -4,26 +4,26 @@ namespace API_DBTryout.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly DataHandler _dataHandler;
+        private readonly DataProvider _dataProvider;
 
         public List<Shop> Shops { get; set; } = new();
         public List<Shul> Shuls { get; set; } = new();
 
-        public IndexModel(DataHandler dataHandler)
+        public IndexModel(DataProvider dataProvider)
         {
-            _dataHandler = dataHandler;
+            _dataProvider = dataProvider;
         }
 
         public async Task OnGet()
         {
-            Shops = _dataHandler.Shops.ListAll();
-            Shuls = _dataHandler.Shuls.ListAll();
+            Shops = _dataProvider.Shops.ListAll();
+            Shuls = _dataProvider.Shuls.ListAll();
         }
 
         public async Task OnPost()
         {
             var shop = new Shop();
-            _dataHandler.Shops.Add(shop);
+            _dataProvider.Shops.Add(shop);
         }
     }
 }
