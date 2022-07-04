@@ -4,26 +4,28 @@ namespace API_DBTryout.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly DataProvider _dataProvider;
+        private readonly IRepository<Shul> _shulRepository;
+        private readonly IRepository<Shop> _shopRepository;
 
         public List<Shop> Shops { get; set; } = new();
         public List<Shul> Shuls { get; set; } = new();
 
-        public IndexModel(DataProvider dataProvider)
+        public IndexModel(IRepository<Shul> shulRepository, IRepository<Shop> shopRepository)
         {
-            _dataProvider = dataProvider;
+            _shulRepository = shulRepository;
+            _shopRepository = shopRepository;
         }
 
-        public async Task OnGet()
+        public void OnGet()
         {
-            Shops = _dataProvider.Shops.ListAll();
-            Shuls = _dataProvider.Shuls.ListAll();
+            Shops = _shopRepository.ListAll();
+            Shuls = _shulRepository.ListAll();
         }
 
-        public async Task OnPost()
+        public void OnPost()
         {
             var shop = new Shop();
-            _dataProvider.Shops.Add(shop);
+            _shopRepository.Add(shop);
         }
     }
 }

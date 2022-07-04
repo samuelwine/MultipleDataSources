@@ -1,4 +1,6 @@
 using API_DBTryout.Data;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,7 @@ namespace API_DBTryout
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
 
             // Add services to the container.
             var ERconnectionString = builder.Configuration.GetConnectionString("ERDefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -23,22 +26,31 @@ namespace API_DBTryout
                 .AddEntityFrameworkStores<ERDbContext>();
             builder.Services.AddRazorPages();
             builder.Services.AddHttpClient<MyClient>();
-            builder.Services.AddScoped<DataProvider>();
-
-            builder.Services.AddScoped(typeof(IRepository<>)(provider =>
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+            builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
             {
-                var httpContextService = provider.GetService<IHttpContextAccessor>();
-                if (httpContextService.HttpContext.Request.Path.Value == "/LG")
+                //builder.RegisterGeneric(typeof(LGGenericRepository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
+                builder.RegisterGeneric((context, types, parameters) =>
                 {
-                    return typeof(LGGenericRepository<>);
-
+                    return Activator.CreateInstance(typeof(LGGenericRepository<>).MakeGenericType(types));
                 }
-                else
-                {
-                    //return new ErDataHandler(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
-                    return typeof(LGGenericRepository<>);
-                }
+                    ).As(typeof(IRepository<>));
             });
+
+            //builder.Services.AddScoped(typeof(IRepository<>)(provider =>
+            //{
+            //    var httpContextService = provider.GetService<IHttpContextAccessor>();
+            //    if (httpContextService.HttpContext.Request.Path.Value == "/LG")
+            //    {
+            //        return typeof(LGGenericRepository<>);
+
+            //    }
+            //    else
+            //    {
+            //        //return new ErDataHandler(provider.GetService<ERDbContext>(), new MyClient(new HttpClient()));
+            //        return typeof(LGGenericRepository<>);
+            //    }
+            //});
 
             //builder.Services.AddScoped(typeof(IRepository<>), typeof(LGGenericRepository<>));
             //builder.Services.AddScoped<IRepository<Shul>, ERShulRepository>();
@@ -46,7 +58,7 @@ namespace API_DBTryout
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configure the HTTP request pipeline.7
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();

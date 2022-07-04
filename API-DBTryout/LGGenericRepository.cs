@@ -6,6 +6,11 @@ namespace API_DBTryout
     {
         private readonly LGDbContext _dbContext;
 
+        public LGGenericRepository()
+        {
+
+        }
+
         public LGGenericRepository(LGDbContext dbContext)
         {
             _dbContext = dbContext;
